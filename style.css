@@ -1,4 +1,33 @@
 * {
   margin: 0px;
-  padding: 0px
+  padding: 0px;
+}
+
+body {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  background-color: #25030A;
+}
+
+body div {
+  border: 6px solid aliceblue;
+}
+
+.container {
+  width: 50vw;
+  height: 50vw;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.box.X {
+  background-color: darkturquoise;
+}
+
+.box.O {
+  background-color: darkred;
 }

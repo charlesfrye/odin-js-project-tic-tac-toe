@@ -1,26 +1,22 @@
 const gameBoard = (() => {
   let _array = Array.from(Array(3), () => new Array(3));
 
-  function _transpose(arr) {
-    return arr[0].map((col, c) => arr.map((row, r) => arr[r][c]));
-  }
-
-  function _clear() {
-    this._array = _array.map((row) => _array.map((col) => 0));
-  }
-
-  function _set() {
-    this._array = [
-      [1, 0, 0],
-      [0, 10, 10],
-      [1, 0, 10],
-    ];
-  }
-
   function check_winner() {
     const winners = _get_winners(this._array);
     const winner = _parse_winners(winners);
     return winner;
+  }
+
+  function clear() {
+    this._array = _array.map((row) => _array.map((col) => 0));
+  }
+
+  function is_legal(row, col) {
+    return this._array[row][col] == 0;
+  }
+
+  function update(row, col, value) {
+    this._array[row][col] = value;
   }
 
   function _get_winners(arr) {
@@ -70,9 +66,9 @@ const gameBoard = (() => {
   function _sum_to_winner(value) {
     switch (value) {
       case 3:
-        return "O";
-      case 30:
         return "X";
+      case 30:
+        return "O";
       default:
         return null;
     }
@@ -88,22 +84,58 @@ const gameBoard = (() => {
     return sum;
   }
 
-  _clear();
+  function _transpose(arr) {
+    return arr[0].map((col, c) => arr.map((row, r) => arr[r][c]));
+  }
 
   return {
     check_winner,
-    _transpose,
-    _clear,
-    _array,
-    _get_winners,
-    _parse_winners,
-    _sum,
-    _score_cols,
-    _score_diags,
-    _score_rows,
-    _check_cols,
-    _check_diags,
-    _check_rows,
-    _set,
+    clear,
+    is_legal,
+    update,
   };
 })();
+
+gameBoard.clear();
+
+const interface = (() => {
+  let player = 1;
+
+  function flip(event) {
+    const square = event.target.id;
+    const { row, col } = _indices_from(square);
+    if (_is_legal(row, col)) {
+      _update_board(row, col, player);
+      _update_display(square, player);
+      _next();
+    }
+  }
+
+  function _is_legal(row, col) {
+    return gameBoard.is_legal(row, col);
+  }
+
+  function _update_board(row, col, player) {
+    gameBoard.update(row, col, player);
+  }
+  function _update_display(square_id, player) {
+    const square_div = document.getElementById(square_id);
+    const new_class = player == 1 ? "X" : "O";
+    square_div.classList.add(new_class);
+  }
+
+  function _indices_from(square_id) {
+    const row_str = square_id[0];
+    const col_str = square_id[1];
+    return { row: parseInt(row_str), col: parseInt(col_str) };
+  }
+
+  function _next() {
+    player = (player + 9) % 18;
+  }
+  return { flip };
+})();
+
+const boxes = [...document.querySelectorAll(".box")];
+
+boxes.map((box) => box.addEventListener("click", interface.flip));
