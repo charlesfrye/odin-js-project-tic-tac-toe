@@ -17,7 +17,7 @@ const gameBoard = (() => {
     ];
   }
 
-  function _check_winner() {
+  function check_winner() {
     const winners = _get_winners(this._array);
     const winner = _parse_winners(winners);
     return winner;
@@ -91,10 +91,10 @@ const gameBoard = (() => {
   _clear();
 
   return {
+    check_winner,
     _transpose,
     _clear,
     _array,
-    _check_winner,
     _get_winners,
     _parse_winners,
     _sum,
